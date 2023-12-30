@@ -1,0 +1,81 @@
+excelFileName = '**Location of your main excel with 12 columns**\**Name of excel file**';
+data = xlsread(excelFileName);
+step = data(:, 1);
+vm = data(:, 2);
+hs = data(:, 3);
+other = data(:, 4);
+fcc = data(:, 5);
+hcp = data(:, 6);
+bcc = data(:, 7);
+ico = data(:, 8);
+vm_amo = data(:, 9);
+hs_amo = data(:, 10);
+vm_bcc = data(:, 11);
+hs_bcc = data(:, 12);
+order = 9;
+step_mean = mean(step);
+step_std = std(step);
+step_scaled = (step - step_mean) / step_std;
+p_vm = polyfit(step_scaled, vm, order);
+p_hs = polyfit(step_scaled, hs, order);
+p_other = polyfit(step_scaled, other, order);
+p_fcc = polyfit(step_scaled, fcc, order);
+p_hcp = polyfit(step_scaled, hcp, order);
+p_bcc = polyfit(step_scaled, bcc, order);
+p_vm_amo = polyfit(step_scaled, vm_amo, order);
+p_hs_amo = polyfit(step_scaled, hs_amo, order);
+p_vm_bcc = polyfit(step_scaled, vm_bcc, order);
+p_hs_bcc = polyfit(step_scaled, hs_bcc, order);
+stepFine = linspace(min(step_scaled), max(step_scaled), 1000);
+figure;
+
+plot(polyval(p_vm, stepFine), 'LineWidth', 2);
+title('vm vs step with 9th order polynomial fit');
+xlabel('Step)');
+ylabel('vm');
+saveas(gcf, '**Location of save file**\VM_vs_step.png');
+
+plot(polyval(p_hs, stepFine), 'LineWidth', 2);
+title('hs vs step with 9th order polynomial fit');
+xlabel('Step');
+ylabel('hs');
+saveas(gcf, '**Location of save file**\hs_vs_step.png');
+
+figure;
+plot(polyval(p_other, stepFine), 'DisplayName', 'other', 'LineWidth', 2);
+hold on;
+plot(polyval(p_fcc, stepFine), 'DisplayName', 'fcc', 'LineWidth', 2);
+plot(polyval(p_bcc, stepFine), 'DisplayName', 'bcc', 'LineWidth', 2);
+plot(polyval(p_hcp, stepFine), 'DisplayName', 'hcp', 'LineWidth', 2);
+hold off;
+
+title('CNA with 9th order polynomial fit');
+xlabel('Step');
+ylabel('Common Neighbour Analysis');
+legend('show');
+saveas(gcf, '**Location of save file**\CNA_vs_step.png');
+
+figure;
+plot(polyval(p_vm, stepFine), 'DisplayName', 'All', 'LineWidth', 2);
+hold on;
+plot(polyval(p_vm_amo, stepFine), 'DisplayName', 'Amo', 'LineWidth', 2);
+plot(polyval(p_vm_bcc, stepFine), 'DisplayName', 'Bcc', 'LineWidth', 2);
+hold off;
+title('VMcompare with 9th order polynomial fit');
+xlabel('Step');
+ylabel('VM');
+legend('show');
+saveas(gcf, '**Location of save file**\VMcompare_vs_step.png'); 
+
+figure;
+plot(polyval(p_hs, stepFine), 'DisplayName', 'All', 'LineWidth', 2);
+hold on;
+plot(polyval(p_hs_amo, stepFine), 'DisplayName', 'Amo', 'LineWidth', 2);
+plot(polyval(p_hs_bcc, stepFine), 'DisplayName', 'Bcc', 'LineWidth', 2);
+hold off;
+title('HScompare with 9th order polynomial fit');
+xlabel('Step');
+ylabel('hs');
+legend('show');
+saveas(gcf, '**Location of save file**\hscompare_vs_step.png');
+
